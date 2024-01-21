@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
   res.json(data);
 });
 
-// test
+// test2
 
 /* GET single user by id */
 // http://localhost:3000/users/single/:userId
