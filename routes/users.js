@@ -43,7 +43,7 @@ router.delete('/:id', async (req, res) => {
 
   try {
     // Use Mongoose to find and remove the item by its ID
-    const result = await YourModel.findByIdAndRemove(userId);
+    const result = await UserModel.findByIdAndRemove(userId);
 
     if (result) {
       res.status(200).json({ message: 'User deleted successfully' });
