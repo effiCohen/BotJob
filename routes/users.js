@@ -9,8 +9,6 @@ router.get("/", async (req, res) => {
   res.json(data);
 });
 
-// test3
-//elad
 
 /* GET single user by id */
 // http://localhost:3000/users/single/:userId
@@ -39,5 +37,24 @@ router.post("/", async (req, res) => {
     return res.status(500).json(err);
   }
 });
+
+router.delete('/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Use Mongoose to find and remove the item by its ID
+    const result = await YourModel.findByIdAndRemove(userId);
+
+    if (result) {
+      res.status(200).json({ message: 'User deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 
 module.exports = router;
