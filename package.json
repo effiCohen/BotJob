@@ -13,7 +13,7 @@
     "http-errors": "~1.6.3",
     "joi": "^17.11.0",
     "mongoos": "^0.0.1-security",
-    "mongoose": "^8.0.4",
+    "mongoose": "^8.1.0",
     "morgan": "~1.9.1"
   }
 }

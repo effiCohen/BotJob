@@ -1,5 +1,6 @@
 var express = require("express");
 const { UserModel, validUser } = require("../models/userModel");
+const mongoose = require('mongoose');
 var router = express.Router();
 
 /* GET users listing. */
@@ -43,7 +44,7 @@ router.delete('/:id', async (req, res) => {
 
   try {
     // Use Mongoose to find and remove the item by its ID
-    const result = await UserModel.findByIdAndRemove(userId);
+    const result = await UserModel.findByIdAndDelete(userId);
 
     if (result) {
       res.status(200).json({ message: 'User deleted successfully' });
