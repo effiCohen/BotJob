@@ -3,20 +3,43 @@ const { UserModel } = require("../models/userModel");
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
+// verify the token
+const verifyToken = (req, res, next) => {
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access denied. Token not provided.' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'key');
+    req.user = decoded.userId;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+const tokenStore = {};
+
 /* Login route */
 router.post("/", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    //  if the user exists in the database
+    // Check if the user exists in the database
     const user = await UserModel.findOne({ email });
 
     if (!user || user.password !== password) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    //  token
-    const token = jwt.sign({ userId: user._id }, 'key', { expiresIn: '1h' });
+    // Generate token
+    const token = jwt.sign({ userId: user._id }, 'key', { expiresIn: '20m' });
+
+    // Save the token 
+    const tokenId = user._id.toString();
+    tokenStore[tokenId] = token;
 
     res.json({ token });
   } catch (error) {
@@ -25,39 +48,27 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/token", verifyToken, (req, res) => {
+  // Access the user ID from the decoded token
+  const userId = req.user;
 
-  
+  // Retrieve the token 
+  const token = tokenStore[userId];
 
-router.get("/token", async (req, res) => {
-    try {
-        //!CHECK IF TOKEN IS EXSIST IN HEADER ('Authorization')
-        const token = req.header('Authorization');
-        //?IF TOKEN IS NOT EXIST IN HEADER
-        if (!token) {
-            return res.status(401).json({
-                error: Unauthorized
-            });
-        }
-        // jwt.verify(token, secretKey)
+  if (!token) {
+    return res.status(401).json({ message: 'Token not found' });
+  }
 
-        //?TOKEN VERIFYED AND RETURN THE PAYLOAD DATA
-        const decodeToken = jwt.verify(token)
-            //?IF TOKEN VERIFYED AND RETURN THE PAYLOAD DATA WITH USER ID
-            //TODO: GO TO ROUTER AND NEXT
-        if (decodeToken._id) {
-            // (req) from middleware to route
-            //?SAVE IN MEMORY BETWEEN MIDDLEWARE AND ROUTE THE PAYLOAD IN REQUEST.TOKEN_DATA
-            req.tokenData = decodeToken;
-            //?NEXT TO ROUTE AFTER TOKEN VERIFYED AND IS VALID
-            next();
-        }
+  res.json({ message: 'Welcome.' });
+});
 
-    } catch (error) {
-        //!ERROR HANDLING CAN BE: EXPIERD TOKEN OR INVALID TOKEN
-        //TODO:RETURN RESPONSE 403 FOR INVALID TOKEN OR EXPIRED TOKEN
-        return res.status(403).json({ err_msg: 'invalid decoding', error })
-    }
 
-  });
+router.post("/logout", verifyToken, (req, res) => {
+  const userId = req.user;
 
-  module.exports = router;
+  // Remove the token 
+  delete tokenStore[userId];
+
+  res.json({ message: 'Logout successful' });
+});
+module.exports = router;
