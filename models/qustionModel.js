@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-
+//Effi
 const questionSchema = new mongoose.Schema({
   question: String,
   Aianswer: String,
