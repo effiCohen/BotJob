@@ -1,5 +1,6 @@
 const indexR = require("./index");
 const usersR = require("./users");
+const loginR = require("./Login");
 
 
 exports.corsAccessControl = (app) => {
@@ -16,6 +17,7 @@ exports.corsAccessControl = (app) => {
 exports.routesInit = (app) => {
     app.use("/",indexR);
     app.use("/users",usersR);
+    app.use("/login",loginR);
     
   
     app.use((req,res) => {
