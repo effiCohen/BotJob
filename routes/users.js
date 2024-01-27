@@ -10,7 +10,6 @@ router.get("/", async (req, res) => {
   res.json(data);
 });
 
-//shlomi
 
 /* GET single user by id */
 // http://localhost:3000/users/single/:userId
