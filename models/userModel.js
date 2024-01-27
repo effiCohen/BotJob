@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
+
+//Shlomi
 const userSchema = new mongoose.Schema({
     FullName:String,
     email:String,
@@ -19,7 +21,7 @@ exports.validUser = (_bodyData) => {
     FullName:Joi.string().min(2).max(99).required(),
     email:Joi.string().min(5).max(99).required(),
     password:Joi.string().min(2).max(99).required(),
-    DateOfBirth:Joi.date().max('01-01-2004').iso().required(),     
+    DateOfBirth:Joi.date().raw().required(),   
     role:Joi.string(),
   })
 
