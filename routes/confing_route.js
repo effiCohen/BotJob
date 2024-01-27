@@ -1,7 +1,6 @@
 const indexR = require("./index");
 const usersR = require("./users");
 const questionsR = require("./questions");
-
 exports.corsAccessControl = (app) => {
   app.all("*", function (req, res, next) {
     if (!req.get("Origin")) return next();
@@ -19,7 +18,6 @@ exports.routesInit = (app) => {
   app.use("/", indexR);
   app.use("/users", usersR);
   app.use("/questions", questionsR);
-
   app.use((req, res) => {
     res.status(404).json({ msg_error: "Url not found , 404!" });
   });
