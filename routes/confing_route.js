@@ -1,3 +1,4 @@
+
 const indexR = require("./index");
 const usersR = require("./users");
 const loginR = require("./login");
@@ -26,3 +27,4 @@ exports.routesInit = (app) => {
     res.status(404).json({ msg_error: "Url not found , 404!" });
   });
 };
+
