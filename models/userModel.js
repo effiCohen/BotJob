@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 
 
-//Shlomi
+
 const userSchema = new mongoose.Schema({
     FullName:String,
     email:String,

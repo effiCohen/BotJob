@@ -3,8 +3,8 @@ const indexR = require("./index");
 const usersR = require("./users");
 const loginR = require("./login");
 const emailR = require("./email");
-
 const questionsR = require("./questions");
+
 exports.corsAccessControl = (app) => {
   app.all("*", function (req, res, next) {
     if (!req.get("Origin")) return next();
