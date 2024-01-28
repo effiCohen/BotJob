@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     FullName: String,
     email: String,
     password: String,
-    DateOfBirth: String,
+    DateOfBirth: Date,
     role: String,
 });
 
@@ -17,7 +17,8 @@ exports.validUser = (_bodyData) => {
         FullName: Joi.string().min(2).max(99).required(),
         email: Joi.string().min(5).max(99).required(),
         password: Joi.string().min(2).max(99).required(),
-        DateOfBirth: Joi.string().regex(/^\d{2}\/\d{2}\/\d{4}$/).required(),
+
+        DateOfBirth: Joi.date().required(),
         role: Joi.string(),
     });
 
