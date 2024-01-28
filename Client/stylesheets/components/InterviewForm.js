@@ -8,7 +8,7 @@ const InterviewForm = () => {
   const handleSaveInterview = async () => {
     try {
       // שליחת בקשת POST לשרת
-      const response = await axios.post('http://localhost:3001/api/saveInterview', { interviewData });
+      const response = await axios.post('http://localhost:3000/api/saveInterview', { interviewData });
 
       // התמודדות עם תשובת השרת
       if (response.data.success) {
