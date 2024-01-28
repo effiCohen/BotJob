@@ -2,6 +2,7 @@ var express = require("express");
 const { UserModel, validUser } = require("../models/userModel");
 const mongoose = require('mongoose');
 var router = express.Router();
+const sendMail = require("../utilities/semdmail");
 
 /* GET users listing. */
 // http://localhost:3000/users
@@ -31,7 +32,21 @@ router.post("/", async (req, res) => {
     return res.status(400).json(validBody.error.details);
   }
   try {
-    let data = await UserModel(req.body).save();
+    let user = new UserModel(req.body);
+    // console.log(user);
+    let num = Math.floor(Math.random() * (99999 - 10000)) + 10000;
+    user.verifictionCode = num.toString();
+
+    let email = user.email;
+    let message = user.verifictionCode;
+    let subject = "code";
+    try {
+      let sentEmail = await sendMail(email, subject, message);
+      console.log(sentEmail);
+    } catch (err) {
+      return res.status(500).send(error.message);
+    }
+    let data = await user.save();
     res.json(data);
   } catch (err) {
     console.log(err);
