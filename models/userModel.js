@@ -18,22 +18,9 @@ exports.validUser = (_bodyData) => {
         FullName: Joi.string().min(2).max(99).required(),
         email: Joi.string().min(5).max(99).required(),
         password: Joi.string().min(2).max(99).required(),
-//
         DateOfBirth: Joi.date().required(),
         role: Joi.string(),
     });
 
     return joiSchema.validate(_bodyData);
 };
-
-  let joiSchema = Joi.object({
-    FullName: Joi.string().min(2).max(99).required(),
-    email: Joi.string().min(5).max(99).required(),
-    password: Joi.string().min(2).max(99).required(),
-    DateOfBirth: Joi.date().raw().required(),
-    role: Joi.string(),
-  });
-
-  return joiSchema.validate(_bodyData);
-};
-
