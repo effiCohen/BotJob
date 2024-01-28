@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema({
   password: String,
   DateOfBirth: Date,
   role: String,
+  verifictionCode: String,
+  verifiction: Boolean,
 });
 
 const UserModel = mongoose.model("users", userSchema);
@@ -20,6 +22,8 @@ exports.validUser = (_bodyData) => {
         password: Joi.string().min(2).max(99).required(),
         DateOfBirth: Joi.date().required(),
         role: Joi.string(),
+        verifictionCode: Joi.string().allow(null,""),
+        verifiction: Joi.boolean().default(false).allow(),
     });
 
     return joiSchema.validate(_bodyData);
