@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 require("dotenv").config();
+
 module.exports = async (email, subject, text) => {
   // initialize and define the mode of transport
   const transporter = nodemailer.createTransport({
