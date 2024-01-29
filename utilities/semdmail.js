@@ -23,6 +23,7 @@ module.exports = async (email, subject, text) => {
     if (error) {
       return console.error("Error:", error);
     }
-    console.log("Email sent:", info.response);
+    console.log(" The message with code : " + text + " sent to : " + email);
+    // console.log(info.response);
   });
 };
