@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 
 const interviewSchema = new mongoose.Schema({
   user_id: String,
+  category: String,
+  role:String,
   date_created: { type: Date, default: Date.now() },
   questions :{type: Array, default: [] },
 });
