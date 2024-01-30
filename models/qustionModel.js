@@ -1,20 +1,20 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-//Effi
+
+
 const questionSchema = new mongoose.Schema({
   question: String,
-  Aianswer: String,
-  useranswer: String,
+  userAnswer: String,
+  aiAnswer: String,
 });
 
-const questionModel = mongoose.model("question", questionSchema);
-exports.questionModel = questionModel;
+exports.QuestionModel = mongoose.model("questions", questionSchema);
 
 exports.validQuestion = (_bodyData) => {
   let joiSchema = Joi.object({
-    question: Joi.string().min(2).max(99).required(),
-    Aianswer: Joi.string().min(5).max(99).required(),
-    useranswer: Joi.string().min(2).max(99).required(),
+    question: Joi.string().min(2).max(99999).required(),
+    userAnswer: Joi.string().min(2).max(99999).allow(null,""),
+    aiAnswer: Joi.string().min(1).max(99999).allow(null,""),
   });
 
   return joiSchema.validate(_bodyData);

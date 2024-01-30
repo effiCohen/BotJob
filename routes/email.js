@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const sendMail = require("../utilities/semdmail");
+const sendMail = require("../middlewares/sendMail");
 
 router.post("/", async (req, res) => {
   try {
