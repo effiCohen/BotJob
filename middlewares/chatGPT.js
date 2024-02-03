@@ -1,39 +1,3 @@
-// const axios = require('axios');
-
-// // const prompt = `Hi ChatGPT,I hope this message finds you well.
-// // I'm looking to simulate an interview to assess my skills in Java programming.
-// // I'd like to receive feedback on my performance,including a score and detailed comments on each of my answers.`;
-
-// exports.openaiMiddleware = async (req, res, next) => {
-//   try {
-//     const apiKey = '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'; 
-//     const apiUrl = 'https://api.openai.com/v1/chat/completions';
-
-//     const response = await axios.post(
-//       apiUrl,
-//       {
-//         prompt: req.body.prompt, // Assuming the prompt is coming from the request body
-//         max_tokens: 150,
-//       },
-//       {
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${apiKey}`,
-//         },
-//       }
-//     );
-
-//     // Add the OpenAI response to the request object for further use if needed
-//     req.openaiResponse = response.data.choices[0].text;
-//     // Continue with the next middleware or route handler
-//     next();
-//   } catch (error) {
-//     // Handle errors
-//     console.error('Error connecting to OpenAI API :', error.message);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
-
 
 const OpenAI = require('openai');
 
