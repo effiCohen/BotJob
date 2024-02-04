@@ -16,7 +16,7 @@ exports.openaiMiddleware = async (req, res, next) => {
         }
       ],
       temperature: 0.5,
-      max_tokens: 64,
+      max_tokens: 1000,
       top_p: 1,
     });
     
@@ -28,7 +28,7 @@ exports.openaiMiddleware = async (req, res, next) => {
   } catch (error) {
     // Handle errors, e.g., log them or send an appropriate response to the client
     console.error("OpenAI API Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" , error });
   }
 };
 
