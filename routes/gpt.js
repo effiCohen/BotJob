@@ -7,11 +7,11 @@ router.get("/", (req, res, next) => {
   res.json({ msg: "Work from gpt" });
 });
 
-router.post('/', openaiMiddleware, (req, res) => {
-  // Access the OpenAI response from req.openaiResponse
-    console.log(interviewQuestions);
+router.post('/',openaiMiddleware , async (req, res) => {
 
-  res.json({ interviewQuestions });
+    console.log(req.openaiResponse);
+
+  res.json({ interviewQuestions : req.openaiResponse  });
 
     
   });

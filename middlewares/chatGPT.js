@@ -1,4 +1,3 @@
-
 const OpenAI = require('openai');
 
 const openai = new OpenAI({
@@ -12,16 +11,22 @@ exports.openaiMiddleware = async (req, res, next) => {
       messages: [
         {
           "role": "user",
-          "content": req.body.userMessage, // Assuming you are sending user input in the request body
+          "content":`I have a job interview for a ${req.body.position} position with ${req.body.experience} years of experience and I want to prepare. Give me  an example of ${req.body.questions} questions that will be asked in the interview.please give it to me in Json format.without a question marks`, 
+        //  body :
+        //   {
+        //     "position" : string,
+        //     "experience" : int,
+        //     "questions" : int
+        //  }
         }
       ],
       temperature: 0.5,
       max_tokens: 1000,
       top_p: 1,
     });
-    
-    // Attach the OpenAI response to the request object
-    req.openaiResponse = response.data.choices[0].text.trim();
+
+    console.log(response.choices[0].message.content); 
+    req.openaiResponse =  response.choices[0].message.content;
     
     // Continue with the next middleware or route handler
     next();
