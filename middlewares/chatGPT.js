@@ -11,7 +11,11 @@ exports.openaiMiddleware = async (req, res, next) => {
       messages: [
         {
           "role": "user",
-          "content":`I have a job interview for a ${req.body.position} position with ${req.body.experience} years of experience and I want to prepare. Give me  an example of ${req.body.questions} questions that will be asked in the interview.please give it to me in Json format.without a question marks`, 
+          "content":`I have a job interview for a ${req.body.position} position
+           with ${req.body.experience} years of experience and I want to prepare,
+           give me an example of ${req.body.questions} questions that will be asked in the interview
+           and what is the best answer,please give it to me in Json format.
+           without question marks and other punctuation marks`, 
         //  body :
         //   {
         //     "position" : string,
@@ -26,8 +30,7 @@ exports.openaiMiddleware = async (req, res, next) => {
     });
 
     console.log(response.choices[0].message.content); 
-    req.openaiResponse =  response.choices[0].message.content;
-    
+    req.openaiResponse =  response.choices[0].message.content 
     // Continue with the next middleware or route handler
     next();
   } catch (error) {
