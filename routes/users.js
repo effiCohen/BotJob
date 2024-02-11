@@ -1,6 +1,6 @@
 var express = require("express");
 const { UserModel, validUser ,validateLogin, genToken} = require("../models/userModel");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt")
 const mongoose = require('mongoose');
 var router = express.Router();
 const sendMail = require("../middlewares/sendMail");
@@ -57,7 +57,7 @@ router.post("/", async (req, res) => {
       return res.json({ err: "The email already exists" });
     }
     await sendMail(user.email, "code", user.verifictionCode);
-    // let pass = bcrypt.hash(user.password, 10);
+    // user.password = bcrypt.hash(user.password, 10);
     await user.save();
     user.password = "****";
     return res.status(201).json(user);
@@ -78,7 +78,7 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ err: "Email not found!" });
     }
-    // let validPass = await bcrypt.compare(req.body.password, user.password);
+    // let validPass = await bcrypt.compare(req.body.password, user.password)
     // if (!validPass) {
     if (req.body.password != user.password) {
       return res.status(401).json({ err: "User or password is wrong" });
