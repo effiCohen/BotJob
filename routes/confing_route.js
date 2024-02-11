@@ -4,7 +4,7 @@ const usersR = require("./users");
 const emailR = require("./email");
 const questionsR = require("./questions");
 const gptR = require("./gpt");
-const jobsR = require("./job")
+const jobsR = require("./jobs")
 
 exports.corsAccessControl = (app) => {
   app.all("*", function (req, res, next) {
@@ -25,7 +25,7 @@ exports.routesInit = (app) => {
   app.use("/questions", questionsR);
   app.use("/email", emailR);
   app.use("/gpt", gptR);
-  app.use("/job", jobsR);
+  app.use("/jobs", jobsR);
   app.use((req, res) => {
     res.status(404).json({ msg_error: "Url not found , 404!" });
   });

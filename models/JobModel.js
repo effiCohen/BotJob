@@ -1,7 +1,8 @@
+const Joi = require("joi");
 const mongoose = require("mongoose");
 
 const jobSchema = new mongoose.Schema({
-    jobs: String,
+    job: String,
   });
 
 
@@ -11,7 +12,7 @@ const jobSchema = new mongoose.Schema({
 
   exports.validJob = (_bodyData) => {
     let joiSchema = Joi.object({
-      Job: Joi.Array.min(1).max(10).allow(null,[]),
+      job: Joi.string().min(1).max(10).required(),
     });
   
     return joiSchema.validate(_bodyData);

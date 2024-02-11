@@ -19,6 +19,7 @@ router.post("/",authAdmin, async (req, res) => {
     try {
       let job = new JobModel (req.body);
       res.json({msg:`job added ${job}`})
+      await job.save();
     } catch (err) {
       console.log(err);
       return res.status(500).json(err);
