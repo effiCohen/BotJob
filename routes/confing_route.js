@@ -3,6 +3,7 @@ const indexR = require("./index");
 const usersR = require("./users");
 const emailR = require("./email");
 const questionsR = require("./questions");
+const interviewsR = require("./interviews");
 const gptR = require("./gpt");
 const jobsR = require("./jobs")
 
@@ -23,6 +24,7 @@ exports.routesInit = (app) => {
   app.use("/", indexR);
   app.use("/users", usersR);
   app.use("/questions", questionsR);
+  app.use("/interviews", interviewsR);
   app.use("/email", emailR);
   app.use("/gpt", gptR);
   app.use("/jobs", jobsR);

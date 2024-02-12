@@ -78,6 +78,9 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res.status(401).json({ err: "Email not found!" });
     }
+    if (!user.verifiction) {
+      return res.status(401).json({ err: "Email not verified!" });
+    }
     // let validPass = await bcrypt.compare(req.body.password, user.password)
     // if (!validPass) {
     if (req.body.password != user.password) {

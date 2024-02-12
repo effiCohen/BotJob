@@ -10,12 +10,12 @@ const questionSchema = new mongoose.Schema({
 
 exports.QuestionModel = mongoose.model("questions", questionSchema);
 
-exports.validQuestion = (_bodyData) => {
-  let joiSchema = Joi.object({
-    question: Joi.string().min(2).max(99999).required(),
-    userAnswer: Joi.string().min(2).max(99999).allow(null,""),
-    aiAnswer: Joi.string().min(1).max(99999).allow(null,""),
-  });
+// exports.validQuestion = (_bodyData) => {
+//   let joiSchema = Joi.object({
+//     question: Joi.string().min(2).max(99999).required(),
+//     userAnswer: Joi.string().min(2).max(99999).allow(null,""),
+//     aiAnswer: Joi.string().min(1).max(99999).required(),
+//   });
 
-  return joiSchema.validate(_bodyData);
-};
+//   return joiSchema.validate(_bodyData);
+// };

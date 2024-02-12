@@ -1,5 +1,5 @@
 const express = require("express");
-const { openaiMiddleware } = require("../middlewares/chatGPT");
+const { getChatGPTResponse } = require("../middlewares/chatGPT");
 const router = express.Router();
 
 
@@ -7,9 +7,10 @@ router.get("/", (req, res, next) => {
   res.json({ msg: "Work from gpt" });
 });
 
-router.post('/', openaiMiddleware, async (req, res) => {
-  console.log(req.openaiResponse);
-  res.json({ interviewQuestions: req.openaiResponse});
+router.post('/', async (req, res) => {
+  const responseGPT = await getChatGPTResponse(req.body);
+  console.log(responseGPT);
+  res.json({ interviewQuestions: responseGPT});
 
 });
 module.exports = router;

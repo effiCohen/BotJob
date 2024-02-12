@@ -1,6 +1,7 @@
 var express = require("express");
 const mongoose = require("mongoose");
 const { InterviewModel, validInterview } = require("../models/interviewModel");
+const { getChatGPTResponse } = require("../middlewares/chatGPT");
 var router = express.Router();
 
 router.get("/allInterviews", async (req, res) => {
@@ -26,31 +27,42 @@ router.post("/", async (req, res) => {
     if (validBody.error) {
         return res.status(400).json(validBody.error.details);
     }
-    try {
-        let data = await InterviewModel(req.body).save();
-        res.json(data);
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json(err);
+    const responseGPT = await getChatGPTResponse(req.body);
+    if (!responseGPT) {
+        return res.status(400).json(responseGPT);
     }
+    console.log("req.body.questions",req.body.questions);
+    console.log("data",responseGPT.data);
+    for(let i = 1; i <= req.body.questions; i++){
+        console.log(i); 
+        console.log(responseGPT.data); 
+    //    try {
+    //     let data = await InterviewModel(req.body).save();
+    //     res.json(data);
+    // } catch (err) {
+    //     console.log(err);
+    //     return res.status(500).json(err);
+    // } 
+    }
+    return res.json(responseGPT.data);
 });
 
 // Update to add questions
-router.put("/interviewId", async (req, res) => {
-    let validBody = validInterview(req.body);
-    if (validBody.error) {
-        return res.status(400).json(validBody.error.details);
-    }
-    try {
-        let interviewId = req.params.interviewId;
-        let updateData = await InterviewModel.updateOne({ _id: interviewId }, req.body)
-        res.status(200).json(updateData);
-    } catch (err) {
-        console.log(err);
-        res.status(400).send(err);
-    }
+// router.put("/interviewId", async (req, res) => {
+//     let validBody = validInterview(req.body);
+//     if (validBody.error) {
+//         return res.status(400).json(validBody.error.details);
+//     }
+//     try {
+//         let interviewId = req.params.interviewId;
+//         let updateData = await InterviewModel.updateOne({ _id: interviewId }, req.body)
+//         res.status(200).json(updateData);
+//     } catch (err) {
+//         console.log(err);
+//         res.status(400).send(err);
+//     }
 
-})
+// })
 
 
 // router.delete("/:id", async (req, res) => {

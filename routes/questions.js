@@ -19,19 +19,19 @@ router.get("/:questionId", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  let validBody = validQuestion(req.body);
-  if (validBody.error) {
-    return res.status(400).json(validBody.error.details);
-  }
-  try {
-    let data = await QuestionModel(req.body).save();
-    res.json(data);
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
-  }
-});
+// router.post("/", async (req, res) => {
+//   let validBody = validQuestion(req.body);
+//   if (validBody.error) {
+//     return res.status(400).json(validBody.error.details);
+//   }
+//   try {
+//     let data = await QuestionModel(req.body).save();
+//     res.json(data);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json(err);
+//   }
+// });
 
 // Update for user answer
 router.put("/questionId", async (req, res) => {
