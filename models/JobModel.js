@@ -12,7 +12,7 @@ const jobSchema = new mongoose.Schema({
 
   exports.validJob = (_bodyData) => {
     let joiSchema = Joi.object({
-      job: Joi.string().min(1).max(10).required(),
+      job: Joi.string().min(1).max(25).required(),
     });
   
     return joiSchema.validate(_bodyData);
