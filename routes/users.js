@@ -43,7 +43,7 @@ router.get("/checkToken",auth, async (req, res) => {
   res.json(true)
 })
 
-/* POST users listing. */
+/* POST users signup. */
 router.post("/", async (req, res) => {
   let validBody = validUser(req.body);
   if (validBody.error) {
@@ -104,6 +104,46 @@ router.patch("/verification", async (req, res) => {
       return res.json("Incorrect code");
     }
     user.verifiction = true;
+    user.verifictionCode = (Math.floor(Math.random() * (99999 - 10000)) + 10000).toString();
+    let data = await UserModel.updateOne({ _id: user._id }, user);
+    res.status(200).json(data);
+  }
+  catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+})
+
+// Forgot password 
+router.patch("/forgotpass", async (req, res) => {
+  try {
+    let thisEmail = req.body.email;
+    console.log(thisEmail);
+    let user = await UserModel.findOne({ email: thisEmail });
+    user.verifictionCode = (Math.floor(Math.random() * (99999 - 10000)) + 10000).toString();
+    await sendMail(user.email, "code", user.verifictionCode);
+    let data = await UserModel.updateOne({ _id: user._id }, user);
+    res.status(200).json(data);
+  }
+  catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+})
+
+// User authentication before password change
+router.patch("/validation", async (req, res) => {
+  try {
+    let thisEmail = req.body.email;
+    let thisVerifictionCode = req.body.validationCode;
+    let user = await UserModel.findOne({ email: thisEmail });
+    if (!user) {
+      return res.status(401).json({ err: "Email not found. Return to page I forgot my password !" });
+    }
+    if (user.verifictionCode != thisVerifictionCode) {
+      return res.json("Incorrect code");
+    }
+    user.verifictionCode = (Math.floor(Math.random() * (99999 - 10000)) + 10000).toString();
     let data = await UserModel.updateOne({ _id: user._id }, user);
     res.status(200).json(data);
   }
