@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 
 const interviewSchema = new mongoose.Schema({
   user_id: String,
-  category: String,
   job:String,
   experience:String,
   date_created: { type: Date, default: Date.now() },

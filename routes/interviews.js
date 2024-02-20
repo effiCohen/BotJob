@@ -1,7 +1,8 @@
-var express = require("express");
+const express = require("express");
 const mongoose = require("mongoose");
 const { InterviewModel, validInterview } = require("../models/interviewModel");
 const { getChatGPTResponse } = require("../middlewares/chatGPT");
+const { QuestionModel } = require("../models/qustionModel");
 var router = express.Router();
 
 router.get("/allInterviews", async (req, res) => {
@@ -24,28 +25,74 @@ router.get("/:interviewId", async (req, res) => {
 
 router.post("/", async (req, res) => {
     let validBody = validInterview(req.body);
+    let idAr = [];
     if (validBody.error) {
         return res.status(400).json(validBody.error.details);
     }
     const responseGPT = await getChatGPTResponse(req.body);
+    
     if (!responseGPT) {
-        return res.status(400).json(responseGPT);
+         return res.status(400).json(responseGPT);
     }
-    console.log("req.body.questions",req.body.questions);
-    console.log("data",responseGPT.data);
-    for(let i = 1; i <= req.body.questions; i++){
-        console.log(i); 
-        console.log(responseGPT.data); 
-    //    try {
-    //     let data = await InterviewModel(req.body).save();
-    //     res.json(data);
-    // } catch (err) {
-    //     console.log(err);
-    //     return res.status(500).json(err);
-    // } 
-    }
-    return res.json(responseGPT.data);
-});
+    // console.log("req.body.questions",req.body.questions);
+      console.log("data", responseGPT);
+     for (let index = 0; index <responseGPT.length ; index+=2) {
+        //  const pair = responseGPT[index];
+         //    console.log(`Question ${index + 1}: ${pair.question}`);
+         //    console.log(`Answer ${index + 1}: ${pair.answer}`);
+
+         // Split the string and get the clean question 
+         let question =responseGPT[index];
+            question = question.split(': ')[1];
+
+          console.log(question);
+         // Split the string and get the clean answer 
+       //  const answer = pair.answer.split('": "')[1].slice(0, -2);
+         let answer = responseGPT[index+1];
+         answer = answer.split(': ')[1];
+         console.log(answer);
+
+    //    const data1 = {
+    //          question: question,
+    //          aiAnswer: answer,
+    //      }
+    //    //  console.log("test");
+    //             try {
+    //      //    console.log(data1);
+    //        //  console.log("try");
+    //          const data = await QuestionModel(data1).save();
+    //          // console.log(data);
+    //          if (!data._id) {
+    //              return res.status(500).json(err);
+    //          }
+    //          else {
+    //              idAr[index] = data._id;
+    //          }
+    //          //console.log(data);
+    //           res.json(data);
+    //      } catch (err) {
+    //          //console.log(err);
+    //          return res.status(500).json(err);
+    //      }
+    //  }
+    //  //console.log(idAr);
+    //  const data3 = {
+    //      job: req.body.job,
+    //      experience: req.body.experience,
+    //      questions: idAr,
+    //  }
+    //  try {
+    //      const data2 = await InterviewModel(data3).save();
+    //    //  console.log(data2);
+    //      if (!data2._id) {
+    //          return res.status(500).json(err);
+    //      }
+    //      res.json(data2);
+    //  } catch (err) {
+    //      console.log(err);
+    //      return res.status(500).json(err);
+      }
+ });
 
 // Update to add questions
 // router.put("/interviewId", async (req, res) => {

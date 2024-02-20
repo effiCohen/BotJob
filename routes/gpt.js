@@ -9,7 +9,8 @@ router.get("/", (req, res, next) => {
 
 router.post('/', async (req, res) => {
   const responseGPT = await getChatGPTResponse(req.body);
-  console.log(responseGPT);
+  // console.log("route");
+  // console.log(responseGPT);
   res.json({ interviewQuestions: responseGPT});
 
 });
