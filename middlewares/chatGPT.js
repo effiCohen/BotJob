@@ -15,7 +15,9 @@ module.exports.getChatGPTResponse = async (req, res) => {
            with ${req.experience} years of experience and I want to prepare,
            give me an example of ${req.questions} questions that will be asked in the interview
            and what is the answer,please give it to me in Json format .
-           without question marks and other punctuation marks`,
+           without question marks and other punctuation marks start the line withe Capital letter`,
+
+
           //  body :
           //   {
           //     "job" : string,
@@ -32,7 +34,7 @@ module.exports.getChatGPTResponse = async (req, res) => {
     let content = response.choices[0].message.content;
 
     // Insert a comma between "answer1" and "question2" if missing
-    content = content.replace(/("answer\d+")("question\d+")/, '$1,$2');
+  //  content = content.replace(/("answer\d+")("question\d+")/, '$1,$2');
     console.log(content);
     
     const qaPairs = JSON.parse(content);
