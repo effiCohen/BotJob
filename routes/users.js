@@ -1,5 +1,5 @@
 var express = require("express");
-const { UserModel, validUser ,validateLogin, genToken} = require("../models/userModel");
+const { UserModel, validUser, validateLogin, genToken } = require("../models/userModel");
 const bcrypt = require("bcrypt")
 const mongoose = require('mongoose');
 var router = express.Router();
@@ -39,7 +39,7 @@ router.get("/myInfo", auth, async (req, res) => {
 })
 
 // check if the user have a good token 
-router.get("/checkToken",auth, async (req, res) => {
+router.get("/checkToken", auth, async (req, res) => {
   res.json(true)
 })
 
@@ -138,7 +138,7 @@ router.patch("/validation", async (req, res) => {
     let thisVerifictionCode = req.body.validationCode;
     let user = await UserModel.findOne({ email: thisEmail });
     if (!user) {
-      return res.status(401).json({ err: "Email not found. Return to page I forgot my password !" });
+      return res.status(401).json({ err: "Email not found. Return to  forgot password page !"});
     }
     if (user.verifictionCode != thisVerifictionCode) {
       return res.json("Incorrect code");
@@ -153,22 +153,41 @@ router.patch("/validation", async (req, res) => {
   }
 })
 
+//  change password
+router.patch("/changePass", async (req, res) => {
+  try {
+    let thisEmail = req.body.email;
+    let newPass = req.body.password;
+    let user = await UserModel.findOne({ email: thisEmail });
+    if (!user) {
+      return res.status(401).json({ err: "Email not found. Return to  forgot password page !" });
+    }
+    user.password = newPass
+    let data = await UserModel.updateOne({ _id: user._id }, user);
+    res.status(200).json(data);
+  }
+  catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+})
+
 
 // Update for user
-router.put("/edit",auth, async (req, res) => {
+router.put("/edit", auth, async (req, res) => {
   // let id = req.params.idEdit
   let validBody = validUser(req.body);
   if (validBody.error) {
-      return res.status(400).json(validBody.error.details);
+    return res.status(400).json(validBody.error.details);
   }
   try {
-      let token_id=req.userToken.id;
-      // console.log(token_id);
-      let updateData = await UserModel.updateOne({ _id: token_id}, req.body)
-      res.status(200).json(updateData);
+    let token_id = req.userToken.id;
+    // console.log(token_id);
+    let updateData = await UserModel.updateOne({ _id: token_id }, req.body)
+    res.status(200).json(updateData);
   } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    console.log(err);
+    res.status(400).send(err);
   }
 
 })

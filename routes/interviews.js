@@ -3,18 +3,26 @@ const mongoose = require("mongoose");
 const { InterviewModel, validInterview } = require("../models/interviewModel");
 const { getChatGPTResponse } = require("../middlewares/chatGPT");
 const { QuestionModel } = require("../models/qustionModel");
+const { authAdmin } = require("../middlewares/auth");
 var router = express.Router();
+const jwt = require("jsonwebtoken");
 
-router.get("/allInterviews", async (req, res) => {
-    let data = await InterviewModel.find({});
+router.get("/allInterviews",authAdmin , async (req, res) => {
+    let data = await InterviewModel.find({_id : "65d4d97e0226289b9eafb59d"});
     res.json(data);
 });
 
 
-router.get("/:interviewId", async (req, res) => {
+router.get("/myIntervew", async (req, res) => {
     try {
-        let InterviewId = req.params.InterviewId;
-        let data = await InterviewModel.findOne({ _id: InterviewId });
+        console.log("token_id");
+        let token = req.header("x-api-key");
+        let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
+        let token_id = decodeToken._id;
+        console.log(token_id);
+        // let token_id = req.userToken.id;
+        // console.log(token_id);
+        let data = await InterviewModel.find({user_id: token_id });
         res.json(data);
     } catch (err) {
         console.log(err);
@@ -22,6 +30,16 @@ router.get("/:interviewId", async (req, res) => {
     }
 });
 
+router.get("/1interview/:interviewId", async (req, res) => {
+    try {
+        let InterviewId = req.params.interviewId;
+        let data = await InterviewModel.findOne({ _id: InterviewId });
+        res.json(data);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+});
 
 router.post("/", async (req, res) => {
     let validBody = validInterview(req.body);
