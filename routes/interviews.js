@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
          return res.status(400).json(responseGPT);
     }
     // console.log("req.body.questions",req.body.questions);
-      console.log("data", responseGPT);
+   //   console.log("data", responseGPT);
      for (let index = 0; index <responseGPT.length ; index+=2) {
         //  const pair = responseGPT[index];
          //    console.log(`Question ${index + 1}: ${pair.question}`);
@@ -73,30 +73,30 @@ router.post("/", async (req, res) => {
          answer = answer.split(': ')[1];
          console.log(answer);
 
-    //    const data1 = {
-    //          question: question,
-    //          aiAnswer: answer,
-    //      }
-    //    //  console.log("test");
-    //             try {
-    //      //    console.log(data1);
-    //        //  console.log("try");
-    //          const data = await QuestionModel(data1).save();
-    //          // console.log(data);
-    //          if (!data._id) {
-    //              return res.status(500).json(err);
-    //          }
-    //          else {
-    //              idAr[index] = data._id;
-    //          }
-    //          //console.log(data);
-    //           res.json(data);
-    //      } catch (err) {
-    //          //console.log(err);
-    //          return res.status(500).json(err);
-    //      }
-    //  }
-    //  //console.log(idAr);
+       const data1 = {
+             question: question,
+             aiAnswer: answer,
+         }
+         console.log("test");
+                try {
+            // console.log(data1);
+           //  console.log("try");
+             const data = await QuestionModel(data1).save();
+             // console.log(data);
+             if (!data._id) {
+                 return res.status(500).json(err);
+             }
+             else {
+                 idAr[index] = data._id;
+             }
+             //console.log(data);
+              res.json(data);
+         } catch (err) {
+             //console.log(err);
+             return res.status(500).json(err);
+         }
+     }
+     //console.log(idAr);
     //  const data3 = {
     //      job: req.body.job,
     //      experience: req.body.experience,
@@ -112,7 +112,7 @@ router.post("/", async (req, res) => {
     //  } catch (err) {
     //      console.log(err);
     //      return res.status(500).json(err);
-      }
+    //   }
  });
 
 // Update to add questions

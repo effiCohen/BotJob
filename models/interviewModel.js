@@ -6,6 +6,7 @@ const interviewSchema = new mongoose.Schema({
   user_id: String,
   job:String,
   experience:String,
+  Time:Number,
   date_created: { type: Date, default: Date.now() },
   questions :{type: Array, default: [] },
 });
