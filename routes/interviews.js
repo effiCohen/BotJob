@@ -6,9 +6,10 @@ const { QuestionModel } = require("../models/qustionModel");
 const { authAdmin } = require("../middlewares/auth");
 var router = express.Router();
 const jwt = require("jsonwebtoken");
+const { UserModel } = require("../models/userModel");
 
-router.get("/allInterviews", authAdmin, async (req, res) => {
-    let data = await InterviewModel.find({ _id: "65d4d97e0226289b9eafb59d" });
+router.get("/allInterviews",authAdmin , async (req, res) => {
+    let data = await InterviewModel.find({_id : "65d4d97e0226289b9eafb59d"});
     res.json(data);
 });
 
@@ -20,10 +21,12 @@ router.get("/myIntervew", async (req, res) => {
         let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
         let token_id = decodeToken._id;
         console.log(token_id);
-        // let token_id = req.userToken.id;
-        // console.log(token_id);
-        let data = await InterviewModel.find({ user_id: token_id });
-        res.json(data);
+        let user = await UserModel.findOne({_id: token_id });
+        userName = user._doc.FullName
+        console.log(user._doc.FullName);
+        console.log(user.FullName);
+        let data = await InterviewModel.find({user_id: token_id });
+        res.json({data:data,name:userName});
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
@@ -41,139 +44,76 @@ router.get("/1interview/:interviewId", async (req, res) => {
     }
 });
 
-
-
 router.post("/", async (req, res) => {
-    try {
-        let token = req.header("x-api-key");
-        let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
-        let token_id = decodeToken._id;
-        let validBody = validInterview(req.body);
-        let idAr = [];
-
-        if (validBody.error) {
-            return res.status(400).json(validBody.error.details);
-        }
-
-        const responseGPT = await getChatGPTResponse(req.body);
-
-        if (!responseGPT) {
-            return res.status(400).json(responseGPT);
-        }
-
-        for (let index = 0; index < responseGPT.length; index += 2) {
-            let question = responseGPT[index].split(': ')[1];
-            let answer = responseGPT[index + 1].split(': ')[1];
-            console.log("interviews");
-            console.log(question);
-            console.log(answer);
-            const data1 = {
-                question: question,
-                aiAnswer: answer,
-            };
-
-            const savedQuestion = await QuestionModel(data1).save();
-            console.log(savedQuestion._id);
-            if (!savedQuestion._id) {
-                throw new Error("Failed to save question.");
-            }
-
-            idAr.push(savedQuestion._id);
-            console.log(idAr);
-        }
-
-        const data3 = {
-            job: req.body.job,
-            experience: req.body.experience,
-            questions: idAr,
-            user_id: token_id,
-
-        };
-
-        const savedInterview = await InterviewModel(data3).save();
-
-        if (!savedInterview._id) {
-            throw new Error("Failed to save interview.");
-        }
-
-        res.json(savedInterview);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Internal server error." });
+    let validBody = validInterview(req.body);
+    let idAr = [];
+    if (validBody.error) {
+        return res.status(400).json(validBody.error.details);
     }
-});
+    const responseGPT = await getChatGPTResponse(req.body);
+    
+    if (!responseGPT) {
+         return res.status(400).json(responseGPT);
+    }
+    // console.log("req.body.questions",req.body.questions);
+      console.log("data", responseGPT);
+     for (let index = 0; index <responseGPT.length ; index+=2) {
+        //  const pair = responseGPT[index];
+         //    console.log(`Question ${index + 1}: ${pair.question}`);
+         //    console.log(`Answer ${index + 1}: ${pair.answer}`);
 
-// router.post("/", async (req, res) => {
-//     let validBody = validInterview(req.body);
-//     let idAr = [];
-//     if (validBody.error) {
-//         return res.status(400).json(validBody.error.details);
-//     }
-//     const responseGPT = await getChatGPTResponse(req.body);
+         // Split the string and get the clean question 
+         let question =responseGPT[index];
+            question = question.split(': ')[1];
 
-//     if (!responseGPT) {
-//          return res.status(400).json(responseGPT);
-//     }
-//     // console.log("req.body.questions",req.body.questions);
-//       console.log("data", responseGPT);
-//      for (let index = 0; index <responseGPT.length ; index+=2) {
-//         //  const pair = responseGPT[index];
-//          //    console.log(`Question ${index + 1}: ${pair.question}`);
-//          //    console.log(`Answer ${index + 1}: ${pair.answer}`);
+          console.log(question);
+         // Split the string and get the clean answer 
+       //  const answer = pair.answer.split('": "')[1].slice(0, -2);
+         let answer = responseGPT[index+1];
+         answer = answer.split(': ')[1];
+         console.log(answer);
 
-//          // Split the string and get the clean question 
-//          let question =responseGPT[index];
-//             question = question.split(': ')[1];
-
-//           console.log(question);
-//          // Split the string and get the clean answer 
-//        //  const answer = pair.answer.split('": "')[1].slice(0, -2);
-//          let answer = responseGPT[index+1];
-//          answer = answer.split(': ')[1];
-//          console.log(answer);
-//         //console.log("=====================");
-
-//        const data1 = {
-//               question: question,
-//               aiAnswer: answer,
-//           }
-//           console.log("test");
-//                  try {
-//              console.log(data1);
-//            //  console.log("try");
-//              const data = await QuestionModel(data1).save();
-//             //  console.log(data);
-//              if (!data._id) {
-//                  return res.status(500).json(err);
-//              }
-//              else {
-//                  idAr[index] = data._id;
-//              }
-//              //console.log(data);
-//               res.json(data);
-//          } catch (err) {
-//              //console.log(err);
-//              return res.status(500).json(err);
-//          }
-//      }
-//      //console.log(idAr);
-//      const data3 = {
-//          job: req.body.job,
-//          experience: req.body.experience,
-//          questions: idAr,
-//      }
-//      try {
-//          const data2 = await InterviewModel(data3).save();
-//        //  console.log(data2);
-//          if (!data2._id) {
-//              return res.status(500).json(err);
-//          }
-//          res.json(data2);
-//      } catch (err) {
-//          console.log(err);
-//          return res.status(500).json(err);
-//       }
-//  });
+    //    const data1 = {
+    //          question: question,
+    //          aiAnswer: answer,
+    //      }
+    //    //  console.log("test");
+    //             try {
+    //      //    console.log(data1);
+    //        //  console.log("try");
+    //          const data = await QuestionModel(data1).save();
+    //          // console.log(data);
+    //          if (!data._id) {
+    //              return res.status(500).json(err);
+    //          }
+    //          else {
+    //              idAr[index] = data._id;
+    //          }
+    //          //console.log(data);
+    //           res.json(data);
+    //      } catch (err) {
+    //          //console.log(err);
+    //          return res.status(500).json(err);
+    //      }
+    //  }
+    //  //console.log(idAr);
+    //  const data3 = {
+    //      job: req.body.job,
+    //      experience: req.body.experience,
+    //      questions: idAr,
+    //  }
+    //  try {
+    //      const data2 = await InterviewModel(data3).save();
+    //    //  console.log(data2);
+    //      if (!data2._id) {
+    //          return res.status(500).json(err);
+    //      }
+    //      res.json(data2);
+    //  } catch (err) {
+    //      console.log(err);
+    //      return res.status(500).json(err);
+      }
+ });
 
 // Update to add questions
 // router.put("/interviewId", async (req, res) => {
