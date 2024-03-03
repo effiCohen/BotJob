@@ -3,6 +3,16 @@ const router = express.Router();
 const { authAdmin } = require("../middlewares/auth");
 const {JobModel , validJob} = require("../models/JobModel")
 
+router.get('/:id', async (req, res) => {
+  try {
+      let jobid = req.params.id;
+      let data = await JobModel.findOne({ _id: jobid });
+      res.json(data.job);
+  } catch (err) {
+      console.log(err);
+      return res.status(500).json(err);
+  }
+});
 
 /* GET jobs listing. */
 router.get("/", async (req, res) => {
@@ -25,13 +35,13 @@ router.post("/",authAdmin, async (req, res) => {
       return res.status(500).json(err);
     }
   });
-
+  
   /*delete job from the list*/
   router.delete('/:id',authAdmin, async (req, res) => {
     let jobid = req.params.id;
     try {
       let job = await JobModel.findByIdAndDelete(jobid);
-      if (user) {
+      if (job) {
         res.status(200).json({ message: 'job deleted successfully' });
       } else {
         res.status(404).json({ message: 'job not found' });
@@ -41,5 +51,7 @@ router.post("/",authAdmin, async (req, res) => {
       res.status(500).json({ message: error });
     }
   });
+
+
 
 module.exports = router;

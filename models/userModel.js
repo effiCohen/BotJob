@@ -3,7 +3,8 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 
 const userSchema = new mongoose.Schema({
-    FullName: String,
+    FirstName: String,
+    LastName: String,
     email: String,
     password: String,
     DateOfBirth: Date,
@@ -21,7 +22,8 @@ exports.UserModel = mongoose.model("users", userSchema);
 exports.validUser = (_bodyData) => {
 
     let joiSchema = Joi.object({
-        FullName: Joi.string().min(2).max(99).required(),
+        FirstName: Joi.string().min(2).max(99).required(),
+        LastName: Joi.string().min(2).max(99).required(),
         email: Joi.string().min(5).max(99).email().required(),
         password: Joi.string().min(2).max(99).required(),
         DateOfBirth: Joi.date().allow(null, ""),

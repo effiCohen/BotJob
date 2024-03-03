@@ -14,7 +14,7 @@ router.get("/allInterviews",authAdmin , async (req, res) => {
 });
 
 
-router.get("/myIntervew", async (req, res) => {
+router.get("/myInterview", async (req, res) => {
     try {
         console.log("token_id");
         let token = req.header("x-api-key");
@@ -22,9 +22,9 @@ router.get("/myIntervew", async (req, res) => {
         let token_id = decodeToken._id;
         console.log(token_id);
         let user = await UserModel.findOne({_id: token_id });
-        userName = user._doc.FullName
-        console.log(user._doc.FullName);
-        console.log(user.FullName);
+        userName = user._doc.FirstName +" "+ user._doc.LastName
+        //console.log(user._doc.FullName);
+        //console.log(user.FullName);
         let data = await InterviewModel.find({user_id: token_id });
         res.json({data:data,name:userName});
     } catch (err) {
