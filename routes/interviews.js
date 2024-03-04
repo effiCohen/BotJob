@@ -9,23 +9,22 @@ const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models/userModel");
 
 router.get("/allInterviews",authAdmin , async (req, res) => {
-    let data = await InterviewModel.find({_id : "65d4d97e0226289b9eafb59d"});
+    let data = await InterviewModel.find({});
     res.json(data);
 });
 
 
 router.get("/myInterview", async (req, res) => {
     try {
-        console.log("token_id");
         let token = req.header("x-api-key");
         let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
         let token_id = decodeToken._id;
         console.log(token_id);
         let user = await UserModel.findOne({_id: token_id });
         userName = user._doc.FirstName +" "+ user._doc.LastName
-        //console.log(user._doc.FullName);
-        //console.log(user.FullName);
+        console.log(userName);
         let data = await InterviewModel.find({user_id: token_id });
+
         res.json({data:data,name:userName});
     } catch (err) {
         console.log(err);
