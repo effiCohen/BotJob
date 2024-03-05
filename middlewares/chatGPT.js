@@ -3,7 +3,7 @@ const OpenAI = require('openai');
 
 
 
-async function getChatGPTResponse(req, res) {
+async function getChatGPTResponse(req, res, retryCount = 0) {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -45,7 +45,7 @@ async function getChatGPTResponse(req, res) {
     } else {
       // If retry limit exceeded, return an empty array
       console.error("Retry limit exceeded, returning empty array.");
-      return [];
+      return ;
     }
   }
 }
