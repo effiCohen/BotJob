@@ -1,18 +1,40 @@
-var express = require("express");
+const express = require("express");
 const mongoose = require("mongoose");
 const { InterviewModel, validInterview } = require("../models/interviewModel");
 const { getChatGPTResponse } = require("../middlewares/chatGPT");
+const { QuestionModel } = require("../models/qustionModel");
+const { authAdmin } = require("../middlewares/auth");
 var router = express.Router();
+const jwt = require("jsonwebtoken");
+const { UserModel } = require("../models/userModel");
 
-router.get("/allInterviews", async (req, res) => {
+router.get("/allInterviews",authAdmin , async (req, res) => {
     let data = await InterviewModel.find({});
     res.json(data);
 });
 
 
-router.get("/:interviewId", async (req, res) => {
+router.get("/myInterview", async (req, res) => {
     try {
-        let InterviewId = req.params.InterviewId;
+        let token = req.header("x-api-key");
+        let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
+        let token_id = decodeToken._id;
+        console.log(token_id);
+        let user = await UserModel.findOne({_id: token_id });
+        userName = user._doc.FirstName +" "+ user._doc.LastName
+        console.log(userName);
+        let data = await InterviewModel.find({user_id: token_id });
+
+        res.json({data:data,name:userName});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+});
+
+router.get("/1interview/:interviewId", async (req, res) => {
+    try {
+        let InterviewId = req.params.interviewId;
         let data = await InterviewModel.findOne({ _id: InterviewId });
         res.json(data);
     } catch (err) {
@@ -21,31 +43,82 @@ router.get("/:interviewId", async (req, res) => {
     }
 });
 
-
 router.post("/", async (req, res) => {
+    let token = req.header("x-api-key");
+    let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
+    let token_id = decodeToken._id;
     let validBody = validInterview(req.body);
+    let idAr = [];
+    let indexAr = 0;
     if (validBody.error) {
         return res.status(400).json(validBody.error.details);
     }
     const responseGPT = await getChatGPTResponse(req.body);
+
     if (!responseGPT) {
-        return res.status(400).json(responseGPT);
+         return res.status(400).json(responseGPT);
     }
-    console.log("req.body.questions",req.body.questions);
-    console.log("data",responseGPT.data);
-    for(let i = 1; i <= req.body.questions; i++){
-        console.log(i); 
-        console.log(responseGPT.data); 
-    //    try {
-    //     let data = await InterviewModel(req.body).save();
-    //     res.json(data);
-    // } catch (err) {
-    //     console.log(err);
-    //     return res.status(500).json(err);
-    // } 
-    }
-    return res.json(responseGPT.data);
-});
+
+     for (let index = 0; index <responseGPT.length ; index+=2) {
+
+
+         // Split the string and get the clean question 
+         let question =responseGPT[index];
+            question = question.split(': ')[1];
+
+          console.log(question);
+
+         let answer = responseGPT[index+1];
+         answer = answer.split(': ')[1];
+         console.log(answer);
+
+         if (!question) {
+            return res.status(500).json(err);
+        }
+       const questionData = {
+             question: question,
+             aiAnswer: answer,
+             userAnswer:null,
+         }
+
+                try {
+
+             const data = await QuestionModel(questionData).save();
+            // console.log(data);
+             if (!data._id) {
+                 return res.status(500).json(err);
+             }
+             else {
+                 idAr[indexAr] = data._id;
+                 indexAr += 1 ;
+                
+             }
+
+         } catch (err) {
+
+             return res.status(500).json(err);
+         }
+     }
+
+     const interviewData = {
+        user_id:token_id,
+         job: req.body.job,
+         experience: req.body.experience,
+         questions: idAr,
+         
+     }
+     try {
+         const interData = await InterviewModel(interviewData).save();
+ 
+         if (!interData._id) {
+             return res.status(500).json(err);
+         }
+         res.json(interData);
+     } catch (err) {
+         console.log(err);
+         return res.status(500).json(err);
+      }
+ });
 
 // Update to add questions
 // router.put("/interviewId", async (req, res) => {

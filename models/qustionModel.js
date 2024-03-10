@@ -4,8 +4,8 @@ const Joi = require("joi");
 
 const questionSchema = new mongoose.Schema({
   question: String,
-  userAnswer: String,
   aiAnswer: String,
+  userAnswer: String,
 });
 
 exports.QuestionModel = mongoose.model("questions", questionSchema);

@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 
 const interviewSchema = new mongoose.Schema({
   user_id: String,
-  category: String,
   job:String,
   experience:String,
+  Time:Number,
   date_created: { type: Date, default: Date.now() },
   questions :{type: Array, default: [] },
 });
