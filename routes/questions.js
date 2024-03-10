@@ -34,13 +34,14 @@ router.get("/:questionId", async (req, res) => {
 // });
 
 // Update for user answer
-router.put("/questionId", async (req, res) => {
+router.put("/:questionId", async (req, res) => {
+  let questionId = req.params.questionId;
   let validBody = validQuestion(req.body);
   if (validBody.error) {
     return res.status(400).json(validBody.error.details);
   }
   try {
-    let questionId = req.params.questionId;
+    
     let updateData = await QuestionModel.updateOne({ _id: questionId }, req.body)
     res.status(200).json(updateData);
   } catch (err) {
