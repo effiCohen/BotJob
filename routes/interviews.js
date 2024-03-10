@@ -43,6 +43,17 @@ router.get("/1interview/:interviewId", async (req, res) => {
     }
 });
 
+router.get("/by_id_user/:id_user", async (req, res) => {
+    try {
+        let id_user = req.params.id_user;
+        let data = await InterviewModel.find({ user_id: id_user });
+        res.json(data);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json(err);
+    }
+});
+
 router.post("/", async (req, res) => {
     let token = req.header("x-api-key");
     let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
