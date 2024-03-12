@@ -4,10 +4,10 @@ const bcrypt = require("bcrypt")
 const mongoose = require('mongoose');
 var router = express.Router();
 const sendMail = require("../middlewares/sendMail");
-const { auth } = require("../middlewares/auth");
+const { auth, authAdmin } = require("../middlewares/auth");
 
 /* GET users listing. */
-router.get("/", async (req, res) => {
+router.get("/",authAdmin, async (req, res) => {
   let data = await UserModel.find({});
   res.json(data);
 });
