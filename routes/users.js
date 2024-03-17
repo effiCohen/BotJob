@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 var router = express.Router();
 const sendMail = require("../middlewares/sendMail");
 const { auth, authAdmin } = require("../middlewares/auth");
+const jwt = require("jsonwebtoken");
 
 /* GET users listing. */
 router.get("/",authAdmin, async (req, res) => {
@@ -28,8 +29,12 @@ router.get("/single/:userId", async (req, res) => {
 
 /* GET single user by token */
 router.get("/myInfo", auth, async (req, res) => {
+  let token = req.header("x-api-key");
+  let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
+  let token_id = decodeToken._id;
+  console.log(token_id);
   try {
-    let data = await UserModel.findOne({ _id: req.tokenData._id }, { password: 0 })
+    let data = await UserModel.findOne({ _id: token_id }, { password: 0 })
     res.json(data);
   }
   catch (err) {
