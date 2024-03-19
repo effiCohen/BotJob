@@ -43,6 +43,11 @@ router.get("/checkToken", auth, async (req, res) => {
   res.json(true)
 })
 
+// check if the user have a good token 
+router.get("/checkTokenAdmin", authAdmin, async (req, res) => {
+  res.json(true)
+})
+
 /* POST users signup. */
 router.post("/", async (req, res) => {
   let validBody = validUser(req.body);
