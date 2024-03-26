@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { InterviewModel, validInterview } = require("../models/interviewModel");
 const { getChatGPTResponse } = require("../middlewares/chatGPT");
 const { QuestionModel } = require("../models/qustionModel");
-const { authAdmin } = require("../middlewares/auth");
+const { authAdmin, auth } = require("../middlewares/auth");
 var router = express.Router();
 const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models/userModel");
@@ -19,7 +19,7 @@ router.get("/myInterview", async (req, res) => {
         let token = req.header("x-api-key");
         let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
         let token_id = decodeToken._id;
-        console.log(token_id);
+        // console.log(token_id);
         let user = await UserModel.findOne({ _id: token_id });
         userName = user._doc.FirstName + " " + user._doc.LastName
         console.log(userName);
@@ -157,19 +157,19 @@ router.put("/:interviewId", async (req, res) => {
 
 
 
-// router.delete("/:id", async (req, res) => {
-//     try {
-//         let interviewId = req.params.id;
-//         let data = await InterviewModel.findByIdAndDelete(interviewId);
-//         if (data) {
-//             res.status(200).json({ message: "interview deleted successfully" });
-//         } else {
-//             res.status(404).json({ message: "interviewId not found" });
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: "Internal Server Error" });
-//     }
-// });
+router.delete("/:id", auth, async (req, res) => {
+    try {
+        let interviewId = req.params.id;
+        let data = await InterviewModel.deleteOne({_id : interviewId});
+        if (data.deletedCount==1) {
+            res.status(200).json({ message: "interview deleted successfully" });
+        } else {
+            res.status(404).json({ message: "interviewId not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 module.exports = router;
