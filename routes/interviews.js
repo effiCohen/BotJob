@@ -22,7 +22,8 @@ router.get("/myInterview", async (req, res) => {
         // console.log(token_id);
         let user = await UserModel.findOne({ _id: token_id });
         userName = user._doc.FirstName + " " + user._doc.LastName
-        console.log(userName);
+        email=user._doc.email;
+        console.log(email);
         let data = await InterviewModel.find({ user_id: token_id });
 
         res.json({ data: data, name: userName });
@@ -61,11 +62,13 @@ router.post("/", async (req, res) => {
     let validBody = validInterview(req.body);
     let idAr = [];
     let user_fullName = "";
+    let email=""
     let indexAr = 0;
     try {
         let user = await UserModel.findOne({ _id: token_id });
         console.log(user);
         user_fullName = user.FirstName + " " + user.LastName;
+        email=user._doc.email;
     } catch (err) {
         console.log(err);
         return res.status(500).json(err);
@@ -99,6 +102,7 @@ router.post("/", async (req, res) => {
             question: question,
             aiAnswer: answer,
             userAnswer: null,
+            
         }
 
         try {
@@ -123,6 +127,7 @@ router.post("/", async (req, res) => {
     const interviewData = {
         user_id: token_id,
         user_fullName: user_fullName,
+        user_email:email,
         job: req.body.job,
         experience: req.body.experience,
         questions: idAr,

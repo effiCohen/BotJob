@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const interviewSchema = new mongoose.Schema({
   user_id: String,
   user_fullName: String,
+  user_email:String,
   job:String,
   experience:String,
   Time:String,
