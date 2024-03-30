@@ -7,7 +7,7 @@ const sendMail = require("../middlewares/sendMail");
 const { auth, authAdmin } = require("../middlewares/auth");
 const jwt = require("jsonwebtoken");
 
-/* GET users listing. */
+/* GET users list. */
 router.get("/",authAdmin, async (req, res) => {
   let data = await UserModel.find({});
   res.json(data);
@@ -32,7 +32,6 @@ router.get("/myInfo", auth, async (req, res) => {
   let token = req.header("x-api-key");
   let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
   let token_id = decodeToken._id;
-  console.log(token_id);
   try {
     let data = await UserModel.findOne({ _id: token_id }, { password: 0 })
     res.json(data);
@@ -48,12 +47,12 @@ router.get("/checkToken", auth, async (req, res) => {
   res.json(true)
 })
 
-// check if the user have a good token 
+// Checks if the user Token is an admin
 router.get("/checkTokenAdmin", authAdmin, async (req, res) => {
   res.json(true)
 })
 
-/* POST users signup. */
+/* Users signup. */
 router.post("/", async (req, res) => {
   let validBody = validUser(req.body);
   if (validBody.error) {
@@ -67,7 +66,6 @@ router.post("/", async (req, res) => {
       return res.json({ err: "The email already exists" });
     }
     await sendMail(user.email, "code", user.verifictionCode);
-    // user.password = bcrypt.hash(user.password, 10);
     await user.save();
     user.password = "****";
     return res.status(201).json(user);
@@ -91,8 +89,6 @@ router.post("/login", async (req, res) => {
     if (!user.verifiction) {
       return res.status(401).json({ err: "Email not verified!" });
     }
-    // let validPass = await bcrypt.compare(req.body.password, user.password)
-    // if (!validPass) {
     if (req.body.password != user.password) {
       return res.status(401).json({ err: "User or password is wrong" });
     }
@@ -128,7 +124,6 @@ router.patch("/verification", async (req, res) => {
 router.patch("/forgotpass", async (req, res) => {
   try {
     let thisEmail = req.body.email;
-    console.log(thisEmail);
     let user = await UserModel.findOne({ email: thisEmail });
     user.verifictionCode = (Math.floor(Math.random() * (99999 - 10000)) + 10000).toString();
     await sendMail(user.email, "code", user.verifictionCode);
@@ -185,14 +180,12 @@ router.patch("/changePass", async (req, res) => {
 
 // Update for user
 router.put("/edit", auth, async (req, res) => {
-  // let id = req.params.idEdit
   let validBody = validUser(req.body);
   if (validBody.error) {
     return res.status(400).json(validBody.error.details);
   }
   try {
     let token_id = req.userToken.id;
-    // console.log(token_id);
     let updateData = await UserModel.updateOne({ _id: token_id }, req.body)
     res.status(200).json(updateData);
   } catch (err) {
@@ -202,7 +195,7 @@ router.put("/edit", auth, async (req, res) => {
 
 })
 
-
+//Delete user
 router.delete('/:id', async (req, res) => {
   let userId = req.params.id;
   try {

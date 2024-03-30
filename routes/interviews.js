@@ -18,13 +18,10 @@ router.get("/myInterview", async (req, res) => {
     let token = req.header("x-api-key");
     let decodeToken = jwt.verify(token, process.env.JWT_SECRET);
     let token_id = decodeToken._id;
-    // console.log(token_id);
     let user = await UserModel.findOne({ _id: token_id });
     userName = user._doc.FirstName + " " + user._doc.LastName;
     email = user._doc.email;
-
     let data = await InterviewModel.find({ user_id: token_id });
-
     res.json({ data: data, name: userName });
   } catch (err) {
     console.log(err);
@@ -147,6 +144,7 @@ router.put("/:interviewId", async (req, res) => {
   }
 });
 
+//Delete an interview
 router.delete("/:id", auth, async (req, res) => {
   try {
     let interviewId = req.params.id;

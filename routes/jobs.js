@@ -14,7 +14,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-/* GET jobs listing. */
+/* GET jobs list. */
 router.get("/", async (req, res) => {
     let data = await JobModel.find({});
     res.json(data);
@@ -36,7 +36,7 @@ router.post("/",authAdmin, async (req, res) => {
     }
   });
   
-  /*delete job from the list*/
+  /*Delete job from the list*/
   router.delete('/:id',authAdmin, async (req, res) => {
     let jobid = req.params.id;
     try {

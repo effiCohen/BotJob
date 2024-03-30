@@ -5,10 +5,7 @@ const jobSchema = new mongoose.Schema({
     job: String,
   });
 
-
   exports.JobModel = mongoose.model("Jobs", jobSchema);
-
-
 
   exports.validJob = (_bodyData) => {
     let joiSchema = Joi.object({

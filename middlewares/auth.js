@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 
+//User authentication
 exports.auth = (req, res, next) => {
     let token = req.header("x-api-key");
     if (!token) {
@@ -14,7 +15,8 @@ exports.auth = (req, res, next) => {
       return res.status(401).json({ err: "Token invalid (if you hacker) or expired" });
     }
   }
-  
+
+  //Admin authentication
   exports.authAdmin = (req, res, next) => {
     let token = req.header("x-api-key");
     if (!token) {
